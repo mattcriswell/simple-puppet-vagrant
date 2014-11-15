@@ -15,6 +15,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     testnode.vm.box = "CentOS7"
     testnode.vm.hostname = "test-node-01"
     testnode.vm.box_url = "https://dl.dropboxusercontent.com/s/srw2tqh58507wik/CentOS7.box"
+    testnode.vm.network "forwarded_port", guest: 80, host: 8080
     testnode.vm.provision "puppet" do |puppet|
       puppet.manifests_path = "puppet/manifests"
       puppet.manifest_file = "site.pp"
