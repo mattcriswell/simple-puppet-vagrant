@@ -12,12 +12,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
   config.vm.define "testnode01" do |testnode|
-    #testnode.vm.box = "ubuntu1404-puppet37dm"
-    testnode.vm.box = "CentOS-6.4-x86_64-v20131103"
+    testnode.vm.box = "CentOS7"
     testnode.vm.hostname = "test-node-01"
-    testnode.vm.network "private_network", ip: "192.168.50.10"
-    #testnode.vm.box_url = "https://s3.amazonaws.com/dm.vagrantfiles/trusty-server-amd64-puppet-3-7.box"
-    testnode.vm.box_url = "http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20131103.box"
+    testnode.vm.box_url = "https://dl.dropboxusercontent.com/s/srw2tqh58507wik/CentOS7.box"
     testnode.vm.provision "puppet" do |puppet|
       puppet.manifests_path = "puppet/manifests"
       puppet.manifest_file = "site.pp"
