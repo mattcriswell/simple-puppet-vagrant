@@ -3,10 +3,16 @@ file {'/tmp/test1':
       content => "Hi.\n",
 }
 
-exec { "yum-update": command => "/bin/yum update -y" }
+exec { 'yum-update': command => "/bin/yum update -y" }
 
 package { "epel-release.noarch":
-	  ensure => present
+  ensure => present,
+  require => exec['yum-update'],
+}
+
+package { "python-flask.noarch":
+  ensure => present,
+  require => package['epel-release.noarch'],
 }
 
 class { 'apache': }
