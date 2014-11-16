@@ -38,8 +38,6 @@ package { "python-flask.noarch":
   require => package['epel-release.noarch'],
 }
 
-#class { 'apache': }
-
 apache::vhost { 'wsgi.example.com':
   require		      => [file['/var/www/demo.wsgi'], file['/var/www/pythonapp'], package['python-flask.noarch']],
   port                        => '80',
