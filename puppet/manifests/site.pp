@@ -1,5 +1,12 @@
 include apache
 
+exec { 'iptables-flush': command => "/usr/sbin/iptables -F" }
+
+service { 'iptables':
+  require => exec['iptables-flush'],
+  ensure => stopped,
+}
+
 exec { 'yum-update': command => "/bin/yum update -y" }
 
 file {'/var/www':
@@ -16,17 +23,8 @@ file {'/var/www/pythonapp':
 file {'/var/www/demo.wsgi':
   require => file['/var/www'],
   ensure => file,
-  content => "from flask import Flask
-application = Flask(__name__)
-
-@application.route('/')
-def hello_world():
-    return 'Hello World!'
-
-if __name__ == '__main__':
-    app.run()",
+  source => 'puppet:///files/app/demo.wsgi';
 }
-
 
 package { "epel-release.noarch":
   ensure => present,
@@ -54,11 +52,4 @@ apache::vhost { 'wsgi.example.com':
     { process-group => 'wsgi', application-group => '%{GLOBAL}' },
   wsgi_process_group          => 'wsgi',
   wsgi_script_aliases         => { '/' => '/var/www/demo.wsgi' },
-}
-
-exec { 'iptables-flush': command => "/usr/sbin/iptables -F" }
-
-service { 'iptables':
-  require => exec['iptables-flush'],
-  ensure => stopped,
 }

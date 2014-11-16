@@ -16,7 +16,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     testnode.vm.hostname = "test-node-01"
     testnode.vm.box_url = "https://dl.dropboxusercontent.com/s/srw2tqh58507wik/CentOS7.box"
     testnode.vm.network "forwarded_port", guest: 80, host: 8080
+    #testnode.vm.share_folder "PuppetFiles", "/etc/puppet/files", "./files"
+    testnode.vm.synced_folder "files/", "/etc/puppet/files"
     testnode.vm.provision "puppet" do |puppet|
+      puppet.options = ["--fileserverconfig=/vagrant/fileserver.conf"]
       puppet.manifests_path = "puppet/manifests"
       puppet.manifest_file = "site.pp"
       puppet.module_path = ["puppet/modules"]
