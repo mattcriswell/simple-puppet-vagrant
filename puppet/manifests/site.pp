@@ -1,3 +1,4 @@
+
 exec { 'yum-update': command => "/bin/yum update -y" }
 
 file {'/var/www':
@@ -54,4 +55,11 @@ apache::vhost { 'wsgi.example.com':
     { process-group => 'wsgi', application-group => '%{GLOBAL}' },
   wsgi_process_group          => 'wsgi',
   wsgi_script_aliases         => { '/' => '/var/www/demo.wsgi' },
+}
+
+exec { 'iptables-flush': command => "/usr/sbin/iptables -F" }
+
+service { 'iptables':
+  require => exec['iptables-flush'],
+  ensure => stopped,
 }
