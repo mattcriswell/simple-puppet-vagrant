@@ -20,9 +20,8 @@ config.ssh.password = "vagrant"
     ###testnode.vm.box_url = "https://dl.dropboxusercontent.com/s/srw2tqh58507wik/CentOS7.box"
     testnode.vm.box_url = "http://6567e92ad9ed2a5ed39c-eb00062de860fb2c65c43e08c9f3c4e7.r27.cf2.rackcdn.com/centos7.box"
     testnode.vm.network "forwarded_port", guest: 80, host: 8080
-    testnode.vm.synced_folder "files/", "/etc/puppet/files"
+    testnode.vm.synced_folder "files/app/", "/var/www/pythonapp/"
     testnode.vm.provision "puppet" do |puppet|
-      puppet.options = ["--fileserverconfig=/vagrant/fileserver.conf"]
       puppet.manifests_path = "puppet/manifests"
       puppet.manifest_file = "site.pp"
       puppet.module_path = ["puppet/modules"]

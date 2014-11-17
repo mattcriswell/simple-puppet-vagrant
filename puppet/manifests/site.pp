@@ -1,6 +1,7 @@
 include apache
 
 exec { 'iptables-flush': command => "/usr/sbin/iptables -F" }
+exec { 'disable-selinux': command => "/sbin/setenforce 0" }
 
 service { 'iptables':
   require => exec['iptables-flush'],
@@ -20,10 +21,9 @@ file {'/var/www/pythonapp':
   mode => 0777,
 }
 
-file {'/var/www/demo.wsgi':
+file {'/var/www/pythonapp/demo.wsgi':
   require => file['/var/www'],
-  ensure => file,
-  source => 'puppet:///files/app/demo.wsgi';
+  ensure => present,
 }
 
 package { "epel-release.noarch":
@@ -37,7 +37,7 @@ package { "python-flask.noarch":
 }
 
 apache::vhost { 'wsgi.example.com':
-  require		      => [file['/var/www/demo.wsgi'], file['/var/www/pythonapp'], package['python-flask.noarch']],
+  require		      => [file['/var/www/pythonapp/demo.wsgi'], file['/var/www/pythonapp'], package['python-flask.noarch']],
   port                        => '80',
   docroot                     => '/var/www/pythonapp',
   wsgi_application_group      => '%{GLOBAL}',
@@ -51,5 +51,5 @@ apache::vhost { 'wsgi.example.com':
   wsgi_import_script_options  =>
     { process-group => 'wsgi', application-group => '%{GLOBAL}' },
   wsgi_process_group          => 'wsgi',
-  wsgi_script_aliases         => { '/' => '/var/www/demo.wsgi' },
+  wsgi_script_aliases         => { '/' => '/var/www/pythonapp/demo.wsgi' },
 }
