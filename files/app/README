@@ -1,0 +1,1 @@
+This is the directoy which is synced with /var/www/pythonapp/ on the VM.  I.E. this is where the git repos will be cloned when the environmet is fired up.
