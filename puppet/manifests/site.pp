@@ -1,5 +1,8 @@
-include apache
+include nebtool
 
+class nebtool {
+
+include apache
 $tool_name = "little-dipper"
 
 exec { 'iptables-flush': command => "/usr/sbin/iptables -F" }
@@ -44,20 +47,22 @@ package { "git":
   ensure => present,
 }
 
+
 apache::vhost { "${tool_name}.example.com":
-  require		      => [vcsrepo["/var/www/pythonapp/${tool_name}"], file['/var/www/pythonapp'], package['python-flask.noarch']],
-  port                        => '80',
-  docroot                     => '/var/www/pythonapp',
-  wsgi_application_group      => '%{GLOBAL}',
-  wsgi_daemon_process         => "${tool_name}",
-  wsgi_daemon_process_options => {
-    processes    => '2',
-    threads      => '15',
-    display-name => '%{GROUP}',
-   },
-  wsgi_import_script          => "/var/www/pythonapp/${tool_name}/demo.wsgi",
-  wsgi_import_script_options  =>
-    { process-group => "${tool_name}", application-group => '%{GLOBAL}' },
-  wsgi_process_group          => "${tool_name}",
-  wsgi_script_aliases         => { '/' => "/var/www/pythonapp/${tool_name}/demo.wsgi" },
+    require		      => [vcsrepo["/var/www/pythonapp/${tool_name}"], file['/var/www/pythonapp'], package['python-flask.noarch']],
+    port                        => '80',
+    docroot                     => '/var/www/pythonapp',
+    wsgi_application_group      => '%{GLOBAL}',
+    wsgi_daemon_process         => "${tool_name}",
+    wsgi_daemon_process_options => {
+      processes    => '2',
+      threads      => '15',
+      display-name => '%{GROUP}',
+     },
+    wsgi_import_script          => "/var/www/pythonapp/${tool_name}/demo.wsgi",
+    wsgi_import_script_options  =>
+      { process-group => "${tool_name}", application-group => '%{GLOBAL}' },
+    wsgi_process_group          => "${tool_name}",
+    wsgi_script_aliases         => { '/' => "/var/www/pythonapp/${tool_name}/demo.wsgi" },
+  }
 }
