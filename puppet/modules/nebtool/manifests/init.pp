@@ -1,7 +1,7 @@
-class nebtool {
+class nebtool ($tool_name = "default") {
 
 include apache
-$tool_name = "little-dipper"
+#$tool_name = "little-dipper"
 
 exec { 'iptables-flush': command => "/usr/sbin/iptables -F" }
 exec { 'disable-selinux': command => "/sbin/setenforce 0" }
