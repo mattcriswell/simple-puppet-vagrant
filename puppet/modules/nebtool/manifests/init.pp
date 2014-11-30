@@ -54,6 +54,10 @@ define toolvhost ($tool_name) {
     require		      => [vcsrepo["/var/www/pythonapp/${tool_name}"], file['/var/www/pythonapp'], package['python-flask.noarch']],
     port                        => '80',
     docroot                     => '/var/www/pythonapp',
+    aliases => [
+      { alias => '/static',
+        path => "/var/www/pythonapp/${tool_name}/static", }
+    ],
     wsgi_application_group      => '%{GLOBAL}',
     wsgi_daemon_process         => "${tool_name}",
     wsgi_daemon_process_options => {
