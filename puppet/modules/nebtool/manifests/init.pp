@@ -12,6 +12,10 @@ class nebtool ($tool_name = "default") {
   }
 
   exec { 'yum-update': command => "/bin/yum update -y" }
+  exec { 'install-bootstrap':
+    command => "/bin/pip install flask-bootstrap",
+    require => package['python-pip'],
+  }
 
   file {'/var/www':
     ensure => directory,
@@ -34,12 +38,20 @@ class nebtool ($tool_name = "default") {
     require => package['epel-release.noarch'],
   }
 
+  package { "python-pip":
+    ensure => present,
+    require => package['epel-release.noarch'],
+  }
+
+  package { "python-flask-wtf.noarch":
+    ensure => present,
+    require => package['epel-release.noarch'],
+  }
+
   package { "git":
     ensure => present,
   }
-
 }
-
 
 define toolvhost ($tool_name) {
 
@@ -51,7 +63,7 @@ define toolvhost ($tool_name) {
   }
 
   apache::vhost { "${tool_name}.example.com":
-    require		      => [vcsrepo["/var/www/pythonapp/${tool_name}"], file['/var/www/pythonapp'], package['python-flask.noarch']],
+    require		      => [vcsrepo["/var/www/pythonapp/${tool_name}"], file['/var/www/pythonapp'], package['python-flask.noarch'], package['python-flask-wtf.noarch']],
     port                        => '80',
     docroot                     => '/var/www/pythonapp',
     aliases => [
