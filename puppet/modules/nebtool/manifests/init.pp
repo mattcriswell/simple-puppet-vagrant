@@ -3,15 +3,19 @@ class nebtool ($tool_name = "default") {
   include apache
   #$tool_name = "little-dipper"
 
-  exec { 'iptables-flush': command => "/usr/sbin/iptables -F" }
+ # exec { 'iptables-flush': command => "/usr/sbin/iptables -F" }
   exec { 'disable-selinux': command => "/sbin/setenforce 0" }
 
-  service { 'iptables':
-    require => exec['iptables-flush'],
+  service { 'firewalld':
+    #require => exec['iptables-flush'],
     ensure => stopped,
   }
 
-  exec { 'yum-update': command => "/bin/yum update -y" }
+  exec { 'yum-update': 
+          command => "/bin/yum update -y", 
+          timeout=> 0,
+       }
+
   exec { 'install-bootstrap':
     command => "/bin/pip install flask-bootstrap",
     require => package['python-pip'],
